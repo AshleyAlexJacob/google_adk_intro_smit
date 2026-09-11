@@ -5,19 +5,6 @@ PDF: campus_assistant.py — v8
 
 Specialists can `transfer_to_agent` and ADK carries conversation state. No manual history copying.
 
-## Setup
-
-```bash
-git checkout step-08-delegation
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # set GOOGLE_API_KEY
-python chat.py
-```
-
-Get a Gemini key at [Google AI Studio](https://aistudio.google.com/app/apikey).
-
 ## Run
 
 ```bash
@@ -42,23 +29,3 @@ Do **not** type `reset` between the two lines of a handoff scenario.
 ## Verbose
 
 Look for `transfer_to_agent` / a change in `author=` from `schedule_agent` to `docs_agent` (or the reverse) **in the same session**.
-
-## Other branches
-
-| Branch | Focus |
-| --- | --- |
-| `main` | Course overview and all test scenarios |
-| `step-01-what-is-adk` | Chat only |
-| `step-02-llm-agent-tools` | Schedule tool |
-| `step-03-litellm` | Swap models |
-| `step-04-mcp-tools` | Docs + MCP |
-| `step-05-agent-garden` | RAG Q&A |
-| `step-06-streaming` | `--stream` |
-| `step-07-hierarchical-routing` | Router |
-| `step-08-delegation` | `transfer_to_agent` |
-| `step-09-error-handling` | Tool errors |
-| `complete` | End-to-end assistant |
-
-```bash
-git checkout complete
-```
