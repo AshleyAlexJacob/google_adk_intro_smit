@@ -5,19 +5,6 @@ PDF: campus_assistant.py — v3
 
 Same agent and tools as Step 2. Only the `model=` line changes (`LLM_PROVIDER` in `.env`).
 
-## Setup
-
-```bash
-git checkout step-03-litellm
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # set GOOGLE_API_KEY
-python chat.py
-```
-
-Get a Gemini key at [Google AI Studio](https://aistudio.google.com/app/apikey).
-
 ## Run
 
 ```bash
@@ -46,23 +33,3 @@ Skip 3–4 if you only have a Gemini key. Scenario 1–2 are enough to pass Step
 - `check_class_schedule` docstring and return shape
 - Agent name and campus persona
 - Only `model=` / `LLM_PROVIDER` differs
-
-## Other branches
-
-| Branch | Focus |
-| --- | --- |
-| `main` | Course overview and all test scenarios |
-| `step-01-what-is-adk` | Chat only |
-| `step-02-llm-agent-tools` | Schedule tool |
-| `step-03-litellm` | Swap models |
-| `step-04-mcp-tools` | Docs + MCP |
-| `step-05-agent-garden` | RAG Q&A |
-| `step-06-streaming` | `--stream` |
-| `step-07-hierarchical-routing` | Router |
-| `step-08-delegation` | `transfer_to_agent` |
-| `step-09-error-handling` | Tool errors |
-| `complete` | End-to-end assistant |
-
-```bash
-git checkout complete
-```
