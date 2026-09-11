@@ -1,6 +1,10 @@
 # SMIT Peshawar · Google ADK Campus Assistant
 
-Python code for every layer in `SMIT_Peshawar_ADK_Agentic_AI.pdf`. Each workshop step is a git branch. The `complete` branch is the full campus assistant with a CLI chat.
+Python code for every layer in `SMIT_Peshawar_ADK_Agentic_AI.pdf`. Each workshop step is a git branch. Checkout **`complete`** for the full campus assistant and CLI chat.
+
+```bash
+git checkout complete
+```
 
 ## Setup
 
@@ -47,7 +51,8 @@ adk run campus_assistant
 | `step-07-hierarchical-routing` | 7 | Router + `schedule_agent` / `docs_agent` |
 | `step-08-delegation` | 8 | `transfer_to_agent` handoff |
 | `step-09-error-handling` | 9 | try/except tools + verbose debug |
-| `complete` | final | End-to-end campus assistant |
+| `complete` | final | End-to-end campus assistant (start here) |
+| `main` | — | Course scaffold only |
 
 ```bash
 git checkout step-02-llm-agent-tools
