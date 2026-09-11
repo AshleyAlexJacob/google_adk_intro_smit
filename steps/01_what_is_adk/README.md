@@ -1,22 +1,21 @@
-# SMIT Peshawar ADK — Step 1: What is ADK?
+# Step 1 — What is ADK?
 
 Branch: `step-01-what-is-adk`  
 PDF: campus_assistant.py — v1
 
-A model-agnostic `Agent` with **no tools**. It can chat, but it cannot look up the real timetable or campus docs.
+A model-agnostic `Agent` with no tools. It can chat, but it cannot look up the real timetable or campus docs.
 
-## Setup
+## Run
 
 ```bash
 git checkout step-01-what-is-adk
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # set GOOGLE_API_KEY
 python chat.py
 ```
 
-Get a Gemini key at [Google AI Studio](https://aistudio.google.com/app/apikey).
+On `complete`: `python chat.py --step 1`
 
 ## Manual test scenarios
 
@@ -34,11 +33,3 @@ Get a Gemini key at [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 - Do **not** expect a tool call. `--verbose` should show no `check_class_schedule`.
 - Do **not** expect grounded answers from `docs/timetable.md`.
-
-## Next
-
-```bash
-git checkout step-02-llm-agent-tools
-```
-
-Full solution: `git checkout complete`
