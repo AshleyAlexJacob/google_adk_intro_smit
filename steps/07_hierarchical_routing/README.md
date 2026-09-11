@@ -5,19 +5,6 @@ PDF: campus_assistant.py — v7
 
 `campus_router` sends timetable questions to `schedule_agent` and document questions to `docs_agent`.
 
-## Setup
-
-```bash
-git checkout step-07-hierarchical-routing
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # set GOOGLE_API_KEY
-python chat.py
-```
-
-Get a Gemini key at [Google AI Studio](https://aistudio.google.com/app/apikey).
-
 ## Run
 
 ```bash
@@ -48,23 +35,3 @@ python chat.py --verbose -m "Who handles schedule changes?"
 
 - First: `schedule_agent` + `check_class_schedule`
 - Second: `docs_agent` + `read_campus_doc` (course coordinator)
-
-## Other branches
-
-| Branch | Focus |
-| --- | --- |
-| `main` | Course overview and all test scenarios |
-| `step-01-what-is-adk` | Chat only |
-| `step-02-llm-agent-tools` | Schedule tool |
-| `step-03-litellm` | Swap models |
-| `step-04-mcp-tools` | Docs + MCP |
-| `step-05-agent-garden` | RAG Q&A |
-| `step-06-streaming` | `--stream` |
-| `step-07-hierarchical-routing` | Router |
-| `step-08-delegation` | `transfer_to_agent` |
-| `step-09-error-handling` | Tool errors |
-| `complete` | End-to-end assistant |
-
-```bash
-git checkout complete
-```
