@@ -5,19 +5,6 @@ PDF: campus_assistant.py — v9
 
 Tools catch errors and return `{ "status": "error", "message": "..." }`. The student chat must keep going.
 
-## Setup
-
-```bash
-git checkout step-09-error-handling
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # set GOOGLE_API_KEY
-python chat.py
-```
-
-Get a Gemini key at [Google AI Studio](https://aistudio.google.com/app/apikey).
-
 ## Run
 
 ```bash
@@ -44,23 +31,3 @@ On `complete`: `python chat.py --step 9 --verbose`
 - The CLI traceback-exits on Sunday
 - The agent invents a Sunday class
 - After an error, later questions stop working
-
-## Other branches
-
-| Branch | Focus |
-| --- | --- |
-| `main` | Course overview and all test scenarios |
-| `step-01-what-is-adk` | Chat only |
-| `step-02-llm-agent-tools` | Schedule tool |
-| `step-03-litellm` | Swap models |
-| `step-04-mcp-tools` | Docs + MCP |
-| `step-05-agent-garden` | RAG Q&A |
-| `step-06-streaming` | `--stream` |
-| `step-07-hierarchical-routing` | Router |
-| `step-08-delegation` | `transfer_to_agent` |
-| `step-09-error-handling` | Tool errors |
-| `complete` | End-to-end assistant |
-
-```bash
-git checkout complete
-```
