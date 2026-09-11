@@ -1,111 +1,70 @@
-"""Step 9 — Error handling and debugging.
+"""Assembled SMIT Peshawar Campus Assistant — all workshop layers.
 
-Matches campus_assistant.py — v9 in SMIT_Peshawar_ADK_Agentic_AI.pdf.
-Catch the error, return a clear status, and let the agent keep talking.
-Debug with: python chat.py --verbose   (or: adk run --verbose)
+Router + schedule_agent + docs_agent, MCP docs, LiteLLM model slot,
+and try/except tools. Matches campus_assistant.py — final in the PDF.
 """
 
-from pathlib import Path
+from __future__ import annotations
+
+import os
 
 from google.adk.agents import LlmAgent
+from google.adk.agents.run_config import RunConfig, StreamingMode
 
-CLASSES = {
-    "Monday": "Python Basics, 6 PM",
-    "Tuesday": "Agentic AI with Google ADK, 6 PM",
-    "Wednesday": "Prompt Engineering, 6 PM",
-    "Thursday": "Multi-Agent Systems, 6 PM",
-    "Friday": "Project Lab, 6 PM",
-    "Saturday": "Weekend Workshop, 10 AM",
-}
-
-
-def _docs_dir() -> Path:
-    here = Path(__file__).resolve()
-    for candidate in (here.parents[2] / "docs", Path.cwd() / "docs"):
-        if candidate.is_dir():
-            return candidate
-    return Path.cwd() / "docs"
-
-
-def check_class_schedule(day: str) -> dict:
-    """Look up SMIT Peshawar classes for a given weekday.
-
-    Args:
-        day: Weekday name such as Monday or Tuesday.
-
-    Returns:
-        A dict with status=success and the class, or status=error.
-    """
-    try:
-        normalized = day.strip().title()
-        aliases = {"Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"}
-        normalized = aliases.get(normalized, normalized)
-        return {"status": "success", "class": CLASSES[normalized]}
-    except KeyError:
-        return {
-            "status": "error",
-            "message": f"No class on {day}. Valid days: {', '.join(CLASSES)}",
-        }
-    except Exception as exc:  # pragma: no cover - defensive
-        return {"status": "error", "message": f"Schedule lookup failed: {exc}"}
-
-
-def read_campus_doc(filename: str) -> dict:
-    """Read a campus document by file name, for example timetable.md."""
-    try:
-        path = _docs_dir() / Path(filename).name
-        if not path.is_file():
-            raise FileNotFoundError(filename)
-        return {
-            "status": "success",
-            "filename": path.name,
-            "content": path.read_text(encoding="utf-8"),
-        }
-    except FileNotFoundError:
-        available = [p.name for p in _docs_dir().glob("*") if p.is_file()]
-        return {
-            "status": "error",
-            "message": f"No document named {filename}. Available: {available}",
-        }
-    except OSError as exc:
-        return {"status": "error", "message": f"Could not read {filename}: {exc}"}
-
+from campus_assistant.config import pick_model
+from campus_assistant.tools import check_class_schedule, read_campus_doc, search_campus_docs
 
 schedule_agent = LlmAgent(
     name="schedule_agent",
-    model="gemini-2.0-flash",
+    model=pick_model(),
     description="Handles SMIT class timetable and weekly schedule questions.",
     instruction="""
 You answer timetable questions for SMIT Peshawar.
 Always call check_class_schedule for a specific weekday.
 If the tool returns status=error, tell the student clearly and list valid days.
-If the question is about course content, call transfer_to_agent with
+If the question is about course content, campus facilities, or documents
+rather than the weekly timetable, call transfer_to_agent with
 agent_name "docs_agent".
 """,
     tools=[check_class_schedule],
 )
 
+docs_tools = [read_campus_doc, search_campus_docs]
+if os.getenv("ENABLE_MCP", "").lower() in {"1", "true", "yes"}:
+    from campus_assistant.mcp_docs import build_docs_mcp_toolset
+
+    docs_tools.append(build_docs_mcp_toolset())
+
 docs_agent = LlmAgent(
     name="docs_agent",
-    model="gemini-2.0-flash",
+    model=pick_model(),
     description="Answers questions from campus course documents and the campus guide.",
     instruction="""
 You answer questions from SMIT course documents.
-Call read_campus_doc with timetable.md, courses.md, or campus_guide.md.
-If the tool returns status=error, explain what documents exist.
-If the question is only about the weekday timetable, call transfer_to_agent
-with agent_name "schedule_agent".
+Use read_campus_doc for a named file (timetable.md, courses.md, campus_guide.md)
+and search_campus_docs for broader questions.
+If a tool returns status=error, explain what documents exist.
+If the question is only about what class meets on a weekday,
+call transfer_to_agent with agent_name "schedule_agent".
 """,
-    tools=[read_campus_doc],
+    tools=docs_tools,
 )
 
 root_agent = LlmAgent(
     name="campus_router",
-    model="gemini-2.0-flash",
-    description="Routes SMIT student questions and recovers from tool errors.",
+    model=pick_model(),
+    description="SMIT Peshawar campus router for schedule and document questions.",
     instruction=(
+        "You are the SMIT Peshawar campus router. "
         "Route schedule vs docs questions. "
-        "Never invent a class time if the schedule tool returns an error."
+        "Send timetable / class-time questions to schedule_agent. "
+        "Send course-content, campus-guide, and document questions to docs_agent. "
+        "Greetings and small talk you may answer yourself. "
+        "Specialists may transfer_to_agent if the topic changes."
     ),
     sub_agents=[schedule_agent, docs_agent],
 )
+
+# Live / bidirectional kiosk mode. The CLI uses SSE when --stream is passed.
+run_config = RunConfig(streaming_mode=StreamingMode.BIDI)
+sse_run_config = RunConfig(streaming_mode=StreamingMode.SSE)
