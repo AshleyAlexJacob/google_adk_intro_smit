@@ -1,1 +1,1 @@
-from .agent import root_agent  # ADK looks for root_agent in this package\n
+from .agent import root_agent  # ADK looks for root_agent in this package

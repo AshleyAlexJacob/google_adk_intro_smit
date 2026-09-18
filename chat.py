@@ -21,7 +21,7 @@ async def main():
 
     print("Campus Assistant  |  type quit to exit")
     while True:
-        query = input("\nYou: ").strip()
+        query = input("You: ").strip()
         if query.lower() in {"quit", "exit", "q"}:
             break
         if not query:
@@ -37,4 +37,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-\n
