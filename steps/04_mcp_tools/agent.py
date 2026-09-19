@@ -41,4 +41,3 @@ root_agent = LlmAgent(
     instruction="Use schedule and docs tools to help students.",
     tools=[check_class_schedule, read_campus_doc, docs_tools],
 )
-\n

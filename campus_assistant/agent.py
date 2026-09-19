@@ -4,6 +4,8 @@ from google.adk.agents import LlmAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
 from mcp import StdioServerParameters
+from google.adk.models.lite_llm import LiteLlm
+
 
 def check_class_schedule(day: str) -> dict:
     """Look up SMIT classes for a weekday like Monday."""
@@ -25,6 +27,9 @@ def read_campus_doc(filename: str) -> dict:
     return {"status": "success", "content": path.read_text()}
 
 
+
+
+
 # MCP: one protocol to connect an external tool server (here: local docs folder)
 docs_tools = McpToolset(
     connection_params=StdioConnectionParams(
@@ -37,8 +42,7 @@ docs_tools = McpToolset(
 
 root_agent = LlmAgent(
     name="campus_assistant",
-    model="gemini-2.0-flash",
+    model=LiteLlm(model="openai/gpt-4o"),
     instruction="Use schedule and docs tools to help students.",
     tools=[check_class_schedule, read_campus_doc, docs_tools],
 )
-\n
