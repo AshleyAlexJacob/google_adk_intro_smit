@@ -1,5 +1,6 @@
 from google.adk.agents import LlmAgent
 from google.adk.agents.run_config import RunConfig, StreamingMode
+from google.adk.models.lite_llm import LiteLlm  
 
 def check_class_schedule(day: str) -> dict:
     """Look up SMIT classes for a weekday like Monday."""
@@ -16,11 +17,10 @@ def check_class_schedule(day: str) -> dict:
 
 root_agent = LlmAgent(
     name="campus_assistant",
-    model="gemini-2.0-flash",
+    model="gemini-3.8-live",
     instruction="Keep answers short. Use check_class_schedule for timetable questions.",
     tools=[check_class_schedule],
 )
 
 # Same agent, different run mode: SSE for text streaming, BIDI for live audio/video
 run_config = RunConfig(streaming_mode=StreamingMode.SSE)
-\n
