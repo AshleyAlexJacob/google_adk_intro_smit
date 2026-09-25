@@ -3,10 +3,21 @@ from pathlib import Path
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 
+
 MODEL = LiteLlm(model="openai/gpt-4o")
 
-def check_class_schedule(day: str) -> dict:
-    """Look up SMIT classes for a weekday like Monday."""
+def check_class_schedule(
+    day: str | None = None,
+    subject: str | None = None,
+) -> dict:
+    """Look up SMIT classes by weekday and/or subject."""
+
+    if not day and not subject:
+        return {
+            "status": "error",
+            "message": "Either day or subject must be provided."
+        }
+
     classes = {
         "Monday": "Python Basics, 6 PM",
         "Tuesday": "Agentic AI with Google ADK, 6 PM",
@@ -15,8 +26,26 @@ def check_class_schedule(day: str) -> dict:
         "Friday": "Project Lab, 6 PM",
         "Saturday": "Weekend Workshop, 10 AM",
     }
-    return {"status": "success", "class": classes.get(day, "None")}
 
+    # Search by day
+    if day:
+        class_info = classes.get(day)
+        if not class_info:
+            return {"status": "error", "message": f"No classes found for {day}."}
+
+        return {"status": "success", "class": class_info}
+
+    # Search by subject
+    matches = [
+        {"day": d, "class": c}
+        for d, c in classes.items()
+        if subject.lower() in c.lower()
+    ]
+
+    return {
+        "status": "success",
+        "classes": matches
+    }
 def read_campus_doc(filename: str) -> dict:
     """Read a campus file such as timetable.md or campus_guide.md."""
     path = Path("docs") / filename
