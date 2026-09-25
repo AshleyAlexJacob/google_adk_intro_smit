@@ -1,6 +1,9 @@
 from pathlib import Path
 
 from google.adk.agents import LlmAgent
+from google.adk.models.lite_llm import LiteLlm
+
+MODEL = LiteLlm(model="openai/gpt-4o")
 
 def check_class_schedule(day: str) -> dict:
     """Look up SMIT classes for a weekday like Monday."""
@@ -24,14 +27,14 @@ def read_campus_doc(filename: str) -> dict:
 
 schedule_agent = LlmAgent(
     name="schedule_agent",
-    model="gemini-2.0-flash",
+    model=MODEL,
     description="Answers timetable questions.",
     tools=[check_class_schedule],
 )
 
 docs_agent = LlmAgent(
     name="docs_agent",
-    model="gemini-2.0-flash",
+    model=MODEL,
     description="Answers questions from campus documents.",
     tools=[read_campus_doc],
 )
@@ -39,8 +42,7 @@ docs_agent = LlmAgent(
 # Root agent reads the question and routes it to a focused sub-agent
 root_agent = LlmAgent(
     name="campus_router",
-    model="gemini-2.0-flash",
+    model=MODEL,
     instruction="Route schedule vs docs questions.",
     sub_agents=[schedule_agent, docs_agent],
 )
-\n
